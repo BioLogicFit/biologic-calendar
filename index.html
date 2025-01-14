@@ -96,16 +96,13 @@
                     { daysOfWeek: [6], startTime: '08:00', endTime: '13:00' }
                 ],
                 dayHeaderFormat: { weekday: 'long', day: 'numeric' },
-                titleFormat: function(date) {
-                    return date.start.date() + ' al ' + date.end.subtract(1, 'day').date() + ' de ' + date.start.format('MMMM') + ' de ' + date.start.year();
-                },
+                titleFormat: { start: 'd', end: 'd', month: 'long', year: 'numeric', separator: ' al ' },
                 validRange: function(nowDate) {
                     return { start: nowDate };
                 },
                 eventDidMount: function(info) {
                     var now = moment();
                     var start = moment(info.event.start);
-                    var end = moment(info.event.end);
                     if (start.isBefore(now) || start.isBefore(now.clone().add(3, 'hours'))) {
                         info.el.classList.add('fc-slot-disabled');
                     }
