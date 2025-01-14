@@ -31,13 +31,23 @@
             border-color: #1e90ff;
         }
         .fc-toolbar-title {
-            text-transform: uppercase;
+            text-transform: none;
         }
         .fc-col-header-cell-cushion {
             text-transform: capitalize;
         }
         .fc-now-indicator {
             background-color: red;
+            height: 2px;
+        }
+        .fc-disabled-slot {
+            background-color: #e0e0e0;
+        }
+        .fc-day-header span {
+            display: block;
+        }
+        .fc-day-header .fc-day-number {
+            font-weight: 600;
         }
         @media (max-width: 600px) {
             #calendar {
@@ -64,6 +74,8 @@
             var calendarEl = document.getElementById('calendar');
             var duracionServicio = parseInt(new URLSearchParams(window.location.search).get('duracion')) || 60;
             var ahora = moment().add(3, 'hours');
+            ahora.minutes(Math.ceil(ahora.minutes() / 15) * 15).seconds(0);
+
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 locale: 'es',
@@ -79,11 +91,20 @@
                 ],
                 slotMinTime: '07:00:00',
                 slotMaxTime: '20:00:00',
-                hiddenDays: [0],
+                hiddenDays: [],
                 validRange: function(nowDate) {
                     return {
                         start: ahora.format('YYYY-MM-DDTHH:mm:ss')
                     };
+                },
+                slotLabelContent: function(arg) {
+                    return moment(arg.date).format('h:mm A');
+                },
+                dayHeaderFormat: { weekday: 'long' },
+                views: {
+                    timeGridWeek: {
+                        titleFormat: { year: 'numeric', month: 'long', day: 'numeric' }
+                    }
                 },
                 selectAllow: function(selectInfo) {
                     var nowPlus3Hours = moment().add(3, 'hours');
@@ -104,3 +125,4 @@
     </script>
 </body>
 </html>
+
