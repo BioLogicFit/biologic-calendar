@@ -85,22 +85,15 @@
                     hour: 'numeric', minute: '2-digit', hour12: true
                 },
                 nowIndicator: true,
+                allDaySlot: false,
+                scrollTime: '07:00:00',
+                slotMinTime: '00:00:00',
+                slotMaxTime: '23:59:59',
                 businessHours: [
                     { daysOfWeek: [1, 2, 3, 4, 5], startTime: '08:00', endTime: '19:00' },
                     { daysOfWeek: [6], startTime: '08:00', endTime: '13:00' }
                 ],
-                slotMinTime: '07:00:00',
-                slotMaxTime: '20:00:00',
-                hiddenDays: [],
-                validRange: function(nowDate) {
-                    return {
-                        start: ahora.format('YYYY-MM-DDTHH:mm:ss')
-                    };
-                },
-                slotLabelContent: function(arg) {
-                    return moment(arg.date).format('h:mm A');
-                },
-                dayHeaderFormat: { weekday: 'long' },
+                dayHeaderFormat: { weekday: 'long', day: 'numeric' },
                 views: {
                     timeGridWeek: {
                         titleFormat: { year: 'numeric', month: 'long', day: 'numeric' }
@@ -118,7 +111,10 @@
                 },
                 events: [
                     { googleCalendarId: 'es.co#holiday@group.v.calendar.google.com', display: 'background', color: '#ff9f89' }
-                ]
+                ],
+                slotLabelContent: function(arg) {
+                    return moment(arg.date).format('h:mm A');
+                }
             });
             calendar.render();
         });
