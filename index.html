@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamiento BioLogic Fit</title>
+    <title>Enero 2025</title>
     <!-- FullCalendar CSS -->
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
@@ -67,7 +67,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
-            var duracionServicio = parseInt(new URLSearchParams(window.location.search).get('duracion')) || 60;
             var ahora = moment().add(3, 'hours');
             ahora.minutes(Math.ceil(ahora.minutes() / 15) * 15).seconds(0);
 
@@ -83,7 +82,9 @@
                 locale: 'es',
                 firstDay: 1,
                 slotDuration: '00:15:00',
-                slotLabelFormat: { hour: 'numeric', minute: '2-digit', hour12: true },
+                slotLabelFormat: {
+                    hour: 'numeric', minute: '2-digit', hour12: true, meridiem: 'short'
+                },
                 nowIndicator: true,
                 allDaySlot: false,
                 scrollTime: '07:00:00',
@@ -94,7 +95,7 @@
                     { daysOfWeek: [6], startTime: '08:00', endTime: '13:00' }
                 ],
                 dayHeaderFormat: { weekday: 'long', day: 'numeric' },
-                titleFormat: { start: "MMMM d", end: "d", year: 'numeric', separator: ' al ' },
+                titleFormat: { month: 'long', year: 'numeric' },
                 validRange: function(nowDate) {
                     return { start: nowDate };
                 },
@@ -109,14 +110,8 @@
                     var nowPlus3Hours = moment().add(3, 'hours');
                     return moment(selectInfo.start).isAfter(nowPlus3Hours);
                 },
-                select: function(info) {
-                    var fechaSeleccionada = moment(info.start).format('LLLL');
-                    if (confirm("¿Quieres agendar tu cita para el día " + fechaSeleccionada + "?")) {
-                        alert("¡Tu cita ha sido agendada para el " + fechaSeleccionada + "!");
-                    }
-                },
                 events: [
-                    { googleCalendarId: 'es.co#holiday@group.v.calendar.google.com', display: 'background', color: '#ff9f89' }
+                    { googleCalendarId: 'es.co#holiday@group.v.calendar.google.com', display: 'background', color: '#e0e0e0' }
                 ]
             });
             calendar.render();
@@ -124,6 +119,7 @@
     </script>
 </body>
 </html>
+
 
 
 
