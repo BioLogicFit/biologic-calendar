@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamiento BioLogic Fit</title>
+    <!-- FullCalendar CSS -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background-color: #f7f7f7;
+            padding: 20px;
+            margin: 0;
+        }
+        #calendar {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .fc-daygrid-day-number {
+            color: #333;
+        }
+        .fc-button-primary {
+            background-color: #1e90ff;
+            border-color: #1e90ff;
+        }
+        .fc-toolbar-title {
+            text-transform: uppercase;
+        }
+        .fc-col-header-cell-cushion {
+            text-transform: capitalize;
+        }
+        @media (max-width: 600px) {
+            #calendar {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Agendar tu Cita en BioLogic Fit</h1>
+    <div id='calendar'></div>
+
+    <!-- FullCalendar JS -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@5.11.3/main.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@5.11.3/main.global.min.js'></script>
+    <!-- Plugin para festivos de Colombia -->
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@5.11.3/main.global.min.js'></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var duracionServicio = parseInt(new URLSearchParams(window.location.search).get('duracion')) || 60;
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                locale: 'es',
+                firstDay: 1,
+                selectable: true,
+                slotDuration: '00:15:00',
+                businessHours: [
+                    { daysOfWeek: [1, 2, 3, 4, 5], startTime: '08:00', endTime: '19:00' },
+                    { daysOfWeek: [6], startTime: '08:00', endTime: '13:00' }
+                ],
+                hiddenDays: [0],
+                events: [
+                    { googleCalendarId: 'es.co#holiday@group.v.calendar.google.com', display: 'background', color: '#ff9f89' }
+                ],
+                selectAllow: function(selectInfo) {
+                    var startHour = moment(selectInfo.start).hour() + (moment(selectInfo.start).minute() / 60);
+                    var maxWeekdayHour = 19 - (duracionServicio / 60);
+                    var maxSaturdayHour = 13 - (duracionServicio / 60);
+                    var maxStartHour = selectInfo.start.getDay() === 6 ? maxSaturdayHour : maxWeekdayHour;
+                    return startHour <= maxStartHour;
+                },
+                select: function(info) {
+                    var fechaSeleccionada = info.startStr;
+                    if (confirm("¿Quieres agendar tu cita para el día " + fechaSeleccionada + "?")) {
+                        alert("¡Tu cita ha sido agendada para el " + fechaSeleccionada + "!");
+                    }
+                },
+                validRange: function(nowDate) {
+                    return {
+                        start: moment().add(3, 'hours').format('YYYY-MM-DD')
+                    };
+                }
+            });
+            calendar.render();
+        });
+    </script>
+</body>
+</html>
