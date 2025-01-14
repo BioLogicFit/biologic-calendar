@@ -36,6 +36,9 @@
         .fc-col-header-cell-cushion {
             text-transform: capitalize;
         }
+        .fc-now-indicator {
+            background-color: red;
+        }
         @media (max-width: 600px) {
             #calendar {
                 width: 100%;
@@ -54,45 +57,47 @@
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/interaction@5.11.3/main.global.min.js'></script>
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@5.11.3/main.global.min.js'></script>
-    <!-- Plugin para festivos de Colombia -->
     <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@5.11.3/main.global.min.js'></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var duracionServicio = parseInt(new URLSearchParams(window.location.search).get('duracion')) || 60;
+            var ahora = moment().add(3, 'hours');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 locale: 'es',
                 firstDay: 1,
-                selectable: true,
                 slotDuration: '00:15:00',
+                slotLabelFormat: {
+                    hour: 'numeric', minute: '2-digit', hour12: true
+                },
+                nowIndicator: true,
                 businessHours: [
                     { daysOfWeek: [1, 2, 3, 4, 5], startTime: '08:00', endTime: '19:00' },
                     { daysOfWeek: [6], startTime: '08:00', endTime: '13:00' }
                 ],
+                slotMinTime: '07:00:00',
+                slotMaxTime: '20:00:00',
                 hiddenDays: [0],
-                events: [
-                    { googleCalendarId: 'es.co#holiday@group.v.calendar.google.com', display: 'background', color: '#ff9f89' }
-                ],
+                validRange: function(nowDate) {
+                    return {
+                        start: ahora.format('YYYY-MM-DDTHH:mm:ss')
+                    };
+                },
                 selectAllow: function(selectInfo) {
-                    var startHour = moment(selectInfo.start).hour() + (moment(selectInfo.start).minute() / 60);
-                    var maxWeekdayHour = 19 - (duracionServicio / 60);
-                    var maxSaturdayHour = 13 - (duracionServicio / 60);
-                    var maxStartHour = selectInfo.start.getDay() === 6 ? maxSaturdayHour : maxWeekdayHour;
-                    return startHour <= maxStartHour;
+                    var nowPlus3Hours = moment().add(3, 'hours');
+                    return moment(selectInfo.start).isAfter(nowPlus3Hours);
                 },
                 select: function(info) {
-                    var fechaSeleccionada = info.startStr;
+                    var fechaSeleccionada = moment(info.start).format('LLLL');
                     if (confirm("¿Quieres agendar tu cita para el día " + fechaSeleccionada + "?")) {
                         alert("¡Tu cita ha sido agendada para el " + fechaSeleccionada + "!");
                     }
                 },
-                validRange: function(nowDate) {
-                    return {
-                        start: moment().add(3, 'hours').format('YYYY-MM-DD')
-                    };
-                }
+                events: [
+                    { googleCalendarId: 'es.co#holiday@group.v.calendar.google.com', display: 'background', color: '#ff9f89' }
+                ]
             });
             calendar.render();
         });
