@@ -71,6 +71,13 @@
             var ahora = moment().add(3, 'hours');
             ahora.minutes(Math.ceil(ahora.minutes() / 15) * 15).seconds(0);
 
+            moment.updateLocale('es', {
+                months: [
+                    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                ]
+            });
+
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'timeGridWeek',
                 locale: 'es',
@@ -122,6 +129,7 @@
     </script>
 </body>
 </html>
+
 
 
 
