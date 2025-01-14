@@ -31,7 +31,7 @@
             border-color: #1e90ff;
         }
         .fc-toolbar-title {
-            text-transform: capitalize;
+            text-transform: none;
         }
         .fc-col-header-cell-cushion {
             text-transform: capitalize;
@@ -94,6 +94,7 @@
                         titleFormat: { day: 'numeric', month: 'long', year: 'numeric', separator: ' al ' }
                     }
                 },
+                titleFormat: { start: 'd', end: 'd', month: 'long', year: 'numeric', separator: ' al ' },
                 validRange: function(nowDate) {
                     return { start: nowDate };
                 },
