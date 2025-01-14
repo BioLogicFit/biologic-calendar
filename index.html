@@ -91,10 +91,12 @@
                 dayHeaderFormat: { weekday: 'long', day: 'numeric' },
                 views: {
                     timeGridWeek: {
-                        titleFormat: { day: 'numeric', month: 'long', year: 'numeric', separator: ' al ' }
+                        titleFormat: { day: 'numeric', month: 'long', year: 'numeric' }
                     }
                 },
-                titleFormat: { start: 'd', end: 'd', month: 'long', year: 'numeric', separator: ' al ' },
+                titleFormat: function(date) {
+                    return date.start.date() + ' al ' + date.end.subtract(1, 'day').date() + ' de ' + date.start.format('MMMM') + ' de ' + date.start.year();
+                },
                 validRange: function(nowDate) {
                     return { start: nowDate };
                 },
