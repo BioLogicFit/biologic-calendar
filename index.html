@@ -40,7 +40,7 @@
             background-color: red;
             height: 2px;
         }
-        .fc-disabled-slot, .fc-day-sun, .fc-day-holiday {
+        .fc-disabled-slot, .fc-day-sun, .fc-day-holiday, .fc-slot-disabled {
             background-color: #e0e0e0 !important;
             pointer-events: none;
         }
@@ -96,16 +96,19 @@
                     { daysOfWeek: [6], startTime: '08:00', endTime: '13:00' }
                 ],
                 dayHeaderFormat: { weekday: 'long', day: 'numeric' },
-                views: {
-                    timeGridWeek: {
-                        titleFormat: { day: 'numeric', month: 'long', year: 'numeric' }
-                    }
-                },
                 titleFormat: function(date) {
                     return date.start.date() + ' al ' + date.end.subtract(1, 'day').date() + ' de ' + date.start.format('MMMM') + ' de ' + date.start.year();
                 },
                 validRange: function(nowDate) {
                     return { start: nowDate };
+                },
+                eventDidMount: function(info) {
+                    var now = moment();
+                    var start = moment(info.event.start);
+                    var end = moment(info.event.end);
+                    if (start.isBefore(now) || start.isBefore(now.clone().add(3, 'hours'))) {
+                        info.el.classList.add('fc-slot-disabled');
+                    }
                 },
                 selectAllow: function(selectInfo) {
                     var nowPlus3Hours = moment().add(3, 'hours');
@@ -119,16 +122,14 @@
                 },
                 events: [
                     { googleCalendarId: 'es.co#holiday@group.v.calendar.google.com', display: 'background', color: '#ff9f89' }
-                ],
-                slotLabelContent: function(arg) {
-                    return moment(arg.date).format('h:mm A');
-                }
+                ]
             });
             calendar.render();
         });
     </script>
 </body>
 </html>
+
 
 
 
