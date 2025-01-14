@@ -31,7 +31,7 @@
             border-color: #1e90ff;
         }
         .fc-toolbar-title {
-            text-transform: none;
+            text-transform: capitalize;
         }
         .fc-col-header-cell-cushion {
             text-transform: capitalize;
@@ -40,14 +40,9 @@
             background-color: red;
             height: 2px;
         }
-        .fc-disabled-slot {
-            background-color: #e0e0e0;
-        }
-        .fc-day-header span {
-            display: block;
-        }
-        .fc-day-header .fc-day-number {
-            font-weight: 600;
+        .fc-disabled-slot, .fc-day-sun, .fc-day-holiday {
+            background-color: #e0e0e0 !important;
+            pointer-events: none;
         }
         @media (max-width: 600px) {
             #calendar {
@@ -99,6 +94,9 @@
                         titleFormat: { year: 'numeric', month: 'long', day: 'numeric' }
                     }
                 },
+                validRange: function(nowDate) {
+                    return { start: nowDate };  // Bloquear semanas anteriores
+                },
                 selectAllow: function(selectInfo) {
                     var nowPlus3Hours = moment().add(3, 'hours');
                     return moment(selectInfo.start).isAfter(nowPlus3Hours);
@@ -121,4 +119,5 @@
     </script>
 </body>
 </html>
+
 
